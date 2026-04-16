@@ -1,4 +1,4 @@
-#include "neonsvm/svr.hpp"
+#include "neonsvm/regression/svr.hpp"
 
 namespace neonsvm {
   SVR::SVR(std::unique_ptr<DecisionFunctionBase>&& decision_function) : m_decision_function(std::move(decision_function)) {

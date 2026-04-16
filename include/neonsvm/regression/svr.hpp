@@ -1,5 +1,5 @@
-#ifndef _NEONSVM_SVR_HPP_
-#define _NEONSVM_SVR_HPP_
+#ifndef _NEONSVM_REGRESSION_SVR_HPP_
+#define _NEONSVM_REGRESSION_SVR_HPP_
 
 #include "neonsvm/decision_function/base.hpp"
 #include <memory>

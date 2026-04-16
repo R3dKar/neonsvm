@@ -5,7 +5,7 @@
 namespace neonsvm {
   PolynomialDecisionFunction::PolynomialDecisionFunction(const std::vector<float>& coefficients,
                                                          const std::vector<std::vector<float>>& support_vectors, float bias, float gamma, float r,
-                                                         uint64_t degree) {
+                                                         uint32_t degree) {
     m_bias = bias;
     m_r = r;
     m_degree = degree;
@@ -39,7 +39,7 @@ namespace neonsvm {
     for (; i + 4 <= bases.size(); i += 4) {
       float32x4_t base_v = vld1q_f32(&bases[i]);
       float32x4_t pow_v = vdupq_n_f32(1);
-      uint64_t degree = m_degree;
+      uint32_t degree = m_degree;
 
       while (degree > 0) {
         if (degree % 2 == 1) pow_v = vmulq_f32(pow_v, base_v);
@@ -57,7 +57,7 @@ namespace neonsvm {
     for (; i < bases.size(); i++) {
       float base = bases[i];
       float pow = 1;
-      uint64_t degree = m_degree;
+      uint32_t degree = m_degree;
 
       while (degree > 0) {
         if (degree % 2 == 1) pow *= base;

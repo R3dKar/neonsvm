@@ -3,6 +3,9 @@
 
 #include <arm_neon.h>
 #include <cstddef>
+#include <stdexcept>
+
+#define NOT_IMPLEMENTED throw std::logic_error("Not implemented yet")
 
 namespace neonsvm::utility {
   // https://github.com/Tencent/ncnn/blob/426cf6673242e4eecf6791d720bd7a7b9b59cdb3/src/layer/arm/neon_mathfun.h#L132
@@ -66,6 +69,11 @@ namespace neonsvm::utility {
 
   constexpr inline size_t align_size(size_t size, size_t alignment) {
     return (size % alignment == 0) ? size : size + alignment - (size % alignment);
+  }
+
+  template <typename T>
+  constexpr inline T clamp(T value, T min, T max) {
+    return std::max(min, std::min(value, max));
   }
 } // namespace neonsvm::utility
 

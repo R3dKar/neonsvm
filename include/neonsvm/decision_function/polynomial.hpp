@@ -8,7 +8,7 @@ namespace neonsvm {
   class PolynomialDecisionFunction : public DecisionFunctionBase {
   public:
     PolynomialDecisionFunction(const std::vector<float>& coefficients, const std::vector<std::vector<float>>& support_vectors, float bias,
-                               float gamma, float r, uint64_t degree);
+                               float gamma, float r, uint32_t degree);
 
     virtual float Predict(const std::vector<float>& features) const override;
 
@@ -17,7 +17,7 @@ namespace neonsvm {
     std::vector<std::vector<float>> m_vectors_scaled;
     float m_bias;
     float m_r;
-    uint64_t m_degree;
+    uint32_t m_degree;
   };
 } // namespace neonsvm
 
