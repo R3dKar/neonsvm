@@ -25,7 +25,9 @@ namespace neonsvm {
   std::vector<float> OVRClassifier::PredictProbability(const std::vector<float>& features) const {
     std::vector<float> probabilities(m_classifiers.size(), 0);
 
-    for (size_t i = 0; i < m_classifiers.size(); i++) probabilities[i] = m_classifiers[i]->PredictProbability(features)[1];
+    for (size_t i = 0; i < m_classifiers.size(); i++) {
+      probabilities[i] = m_classifiers[i]->PredictProbability(features)[1];
+    }
 
     return probabilities;
   }

@@ -33,7 +33,9 @@ namespace neonsvm {
       }
 
       bases[i] = vaddvq_f32(sum_v);
-      for (; j < support_vector.size(); j++) bases[i] += support_vector[j] * features[j];
+      for (; j < support_vector.size(); j++) {
+        bases[i] += support_vector[j] * features[j];
+      }
     }
 
     float32x4_t sum_v = {m_bias, 0, 0, 0};

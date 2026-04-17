@@ -31,7 +31,9 @@ namespace neonsvm {
       feature_v = vmulq_f32(feature_v, sqrt_gamma_v);
       vst1q_f32(&features_scaled[i], feature_v);
     }
-    for (; i < features.size(); i++) features_scaled[i] = features[i] * m_sqrt_gamma;
+    for (; i < features.size(); i++) {
+      features_scaled[i] = features[i] * m_sqrt_gamma;
+    }
 
     std::vector<float> norms(m_vectors_scaled.size(), 0);
     for (size_t i = 0; i < norms.size(); i++) {
@@ -59,7 +61,9 @@ namespace neonsvm {
 
     float result = vaddvq_f32(sum_v);
 
-    for (; i < norms.size(); i++) result += m_coeffictients[i] * std::exp(-norms[i]);
+    for (; i < norms.size(); i++) {
+      result += m_coeffictients[i] * std::exp(-norms[i]);
+    }
 
     return result;
   }
