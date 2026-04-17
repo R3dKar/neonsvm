@@ -59,7 +59,7 @@ namespace neonsvm {
 
     float result = vaddvq_f32(sum_v);
 
-    for (; i < norms.size(); i++) result += m_coeffictients[i] * std::exp(norms[i]);
+    for (; i < norms.size(); i++) result += m_coeffictients[i] * std::exp(-norms[i]);
 
     return result;
   }
