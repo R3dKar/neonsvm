@@ -20,8 +20,8 @@ namespace neonsvm {
   }
 
   float PolynomialDecisionFunction::Predict(const std::vector<float>& features) const {
-    std::vector<float> bases(features.size(), 0);
-    for (size_t i = 0; i < features.size(); i++) {
+    std::vector<float> bases(m_vectors_scaled.size(), 0);
+    for (size_t i = 0; i < m_vectors_scaled.size(); i++) {
       const auto& support_vector = m_vectors_scaled[i];
       float32x4_t sum_v = {m_r, 0, 0, 0};
 
