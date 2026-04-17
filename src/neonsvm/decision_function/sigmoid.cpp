@@ -33,7 +33,9 @@ namespace neonsvm {
       }
 
       xs[i] = vaddvq_f32(x_v);
-      for (; j < features.size(); j++) xs[i] += features[j] * support_vector[j];
+      for (; j < features.size(); j++) {
+        xs[i] += features[j] * support_vector[j];
+      }
     }
 
     float32x4_t sum_v = {m_bias, 0, 0, 0};
@@ -44,7 +46,7 @@ namespace neonsvm {
       const float32x4_t x_v = vld1q_f32(&xs[i]);
       const float32x4_t exp_v = neonsvm::utility::vexpq_f32(x_v);
       const float32x4_t one_v = vdupq_n_f32(1);
-      const float32x4_t tanh_v = vdivq_f32(vaddq_f32(exp_v, one_v), vsubq_f32(exp_v, one_v));
+      const float32x4_t tanh_v = vdivq_f32(vsubq_f32(exp_v, one_v), vaddq_f32(exp_v, one_v));
       sum_v = vfmaq_f32(sum_v, coeff_v, tanh_v);
     }
 
