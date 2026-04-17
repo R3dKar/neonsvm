@@ -14,7 +14,9 @@ namespace neonsvm {
 
     for (auto& vector : m_vectors_scaled) {
       vector.resize(neonsvm::utility::align_size(vector.size(), 4), 0);
-      for (auto& item : vector) item *= m_sqrt_gamma;
+      for (auto& item : vector) {
+        item *= m_sqrt_gamma;
+      }
     }
   }
 

@@ -6,11 +6,11 @@
 #include <memory>
 
 namespace neonsvm {
-  std::unique_ptr<ClassifierBase> load_classifier(const char* data);
-  std::unique_ptr<ClassifierBase> load_classifier_from_file(const char* filename);
+  std::unique_ptr<ClassifierBase> LoadClassifier(const char* data, bool ignore_checks = true);
+  std::unique_ptr<ClassifierBase> LoadClassifierFile(const char* filename, bool ignore_checks = true);
 
-  SVR load_regressor(const char* data);
-  SVR load_regressor_from_file(const char* filename);
+  SVR LoadRegressor(const char* data, bool ignore_checks = true);
+  SVR LoadRegressorFile(const char* filename, bool ignore_checks = true);
 } // namespace neonsvm
 
 #endif

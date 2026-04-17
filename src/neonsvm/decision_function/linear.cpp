@@ -8,8 +8,11 @@ namespace neonsvm {
     m_bias = bias;
 
     m_hyperplane = std::vector<float>(coefficients.size(), 0);
-    for (size_t i = 0; i < coefficients.size(); i++)
-      for (size_t j = 0; j < support_vectors[i].size(); j++) m_hyperplane[j] += coefficients[i] * support_vectors[i][j];
+    for (size_t i = 0; i < coefficients.size(); i++) {
+      for (size_t j = 0; j < support_vectors[i].size(); j++) {
+        m_hyperplane[j] += coefficients[i] * support_vectors[i][j];
+      }
+    }
   }
 
   float LinearDecisionFunction::Predict(const std::vector<float>& features) const {
@@ -24,7 +27,9 @@ namespace neonsvm {
 
     float result = vaddvq_f32(sum_v);
 
-    for (; i < m_hyperplane.size(); i++) result += features[i] * m_hyperplane[i];
+    for (; i < m_hyperplane.size(); i++) {
+      result += features[i] * m_hyperplane[i];
+    }
 
     return result;
   }

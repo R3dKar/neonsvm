@@ -67,13 +67,17 @@ namespace neonsvm::utility {
     return y;
   }
 
-  constexpr inline size_t align_size(size_t size, size_t alignment) {
+  constexpr size_t align_size(size_t size, size_t alignment) {
     return (size % alignment == 0) ? size : size + alignment - (size % alignment);
   }
 
   template <typename T>
-  constexpr inline T clamp(T value, T min, T max) {
+  constexpr T clamp(T value, T min, T max) {
     return std::max(min, std::min(value, max));
+  }
+
+  constexpr bool equal_approx(float first, float second, float error = 1e-4f) {
+    return std::abs(first - second) <= error;
   }
 } // namespace neonsvm::utility
 

@@ -12,8 +12,11 @@ namespace neonsvm {
     m_coefficients = coefficients;
     m_vectors_scaled = support_vectors;
 
-    for (auto& vector : m_vectors_scaled)
-      for (auto& item : vector) item *= gamma;
+    for (auto& vector : m_vectors_scaled) {
+      for (auto& item : vector) {
+        item *= gamma;
+      }
+    }
   }
 
   float PolynomialDecisionFunction::Predict(const std::vector<float>& features) const {

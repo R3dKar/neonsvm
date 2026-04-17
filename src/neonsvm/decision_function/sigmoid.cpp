@@ -12,8 +12,11 @@ namespace neonsvm {
     m_coefficients = coefficients;
     m_vectors_scaled = support_vectors;
 
-    for (auto& vector : m_vectors_scaled)
-      for (auto& item : vector) item *= 2 * gamma;
+    for (auto& vector : m_vectors_scaled) {
+      for (auto& item : vector) {
+        item *= 2 * gamma;
+      }
+    }
   }
 
   float SigmoidDecisionFunction::Predict(const std::vector<float>& features) const {
@@ -47,7 +50,9 @@ namespace neonsvm {
 
     float result = vaddvq_f32(sum_v);
 
-    for (; i < xs.size(); i++) result += m_coefficients[i] * std::tanh(xs[i] / 2.0);
+    for (; i < xs.size(); i++) {
+      result += m_coefficients[i] * std::tanh(xs[i] / 2.0);
+    }
 
     return result;
   }
