@@ -15,7 +15,7 @@ namespace neonsvm {
     size_t classifier_index = 0;
     for (size_t i = 0; i < m_class_count - 1; i++) {
       for (size_t j = i + 1; j < m_class_count; j++) {
-        const uint32_t ovo_label = m_classifiers[classifier_index]->PredictLabel(features);
+        const auto ovo_label = m_classifiers[classifier_index]->PredictLabel(features);
 
         if (ovo_label == 0)
           votes[i]++;

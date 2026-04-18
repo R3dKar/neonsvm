@@ -4,6 +4,7 @@
 #include <arm_neon.h>
 #include <cstddef>
 #include <stdexcept>
+#include <vector>
 
 #define NOT_IMPLEMENTED throw std::logic_error("Not implemented yet")
 
@@ -76,8 +77,22 @@ namespace neonsvm::utility {
     return std::max(min, std::min(value, max));
   }
 
-  constexpr bool equal_approx(float first, float second, float error = 1e-4f) {
+  constexpr bool equal_approx(float first, float second, float error = 1e-3f) {
     return std::abs(first - second) <= error;
+  }
+
+  inline bool equal_approx(const std::vector<float>& first, const std::vector<float>& second, float error = 1e-3f) {
+    if (first.size() != second.size()) return false;
+
+    for (size_t i = 0; i < first.size(); i++) {
+      if (!equal_approx(first[i], second[i], error)) return false;
+    }
+
+    return true;
+  }
+
+  constexpr size_t pair_index(size_t first, size_t second, size_t n) {
+    return first * n - first * (first - 1) / 2 + second - first - 1;
   }
 } // namespace neonsvm::utility
 

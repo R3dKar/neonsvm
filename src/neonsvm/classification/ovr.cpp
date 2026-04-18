@@ -7,7 +7,7 @@ namespace neonsvm {
   }
 
   uint32_t OVRClassifier::PredictLabel(const std::vector<float>& features) const {
-    float max_score = std::numeric_limits<float>::min();
+    float max_score = std::numeric_limits<float>::lowest();
     uint32_t label = 0;
 
     for (size_t i = 0; i < m_classifiers.size(); i++) {

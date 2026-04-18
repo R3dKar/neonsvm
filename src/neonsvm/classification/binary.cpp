@@ -14,12 +14,12 @@ namespace neonsvm {
   }
 
   uint32_t BinarySVC::PredictLabel(const std::vector<float>& features) const {
-    const float score = PredictScore(features);
+    const auto score = PredictScore(features);
     return (score > 0) ? 1 : 0;
   }
 
   std::vector<float> BinarySVC::PredictProbability(const std::vector<float>& features) const {
-    const float score = PredictScore(features);
+    const auto score = PredictScore(features);
 
     if (score > 0)
       return {0, 1};
@@ -32,7 +32,7 @@ namespace neonsvm {
   }
 
   std::vector<float> PlattBinarySVC::PredictProbability(const std::vector<float>& features) const {
-    const float score = PredictScore(features);
+    const auto score = PredictScore(features);
     const float probability = 1.0f / (1.0f + std::exp(m_a * score + m_b));
     return {1 - probability, probability};
   }

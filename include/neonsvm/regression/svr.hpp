@@ -10,10 +10,6 @@ namespace neonsvm {
   public:
     SVR(std::unique_ptr<DecisionFunctionBase>&& decision_function);
 
-    template <typename T, typename... Args>
-    SVR(Args&&... args) : SVR(std::unique_ptr<T>(new T(std::forward<Args>(args)...))) {
-    }
-
     float Predict(const std::vector<float>& features) const;
     std::vector<float> PredictBatch(const std::vector<std::vector<float>>& batch) const;
 
