@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <yaml-cpp/yaml.h>
 
 namespace {
@@ -86,7 +87,30 @@ namespace {
     const auto kernel = data["kernel"];
     const auto labels = data["labels"].as<std::vector<std::string>>();
 
-    NOT_IMPLEMENTED;
+    std::unordered_map<std::string, size_t> label_index{};
+    for (size_t i = 0; i < labels.size(); i++) {
+      label_index[labels[i]] = i;
+    }
+
+    std::vector<std::unique_ptr<BinarySVC>> classifiers(labels.size() * (labels.size() - 1) / 2);
+
+    for (const auto classifier_node : data["binary-classifiers"]) {
+      auto false_index = label_index[classifier_node["false-label"].as<std::string>()];
+      auto true_index = label_index[classifier_node["true-label"].as<std::string>()];
+
+      bool inverse = false;
+      if (false_index > true_index) {
+        std::swap(false_index, true_index);
+        inverse = true;
+      }
+
+      const auto classifier_index = utility::pair_index(false_index, true_index, labels.size());
+      classifiers[classifier_index] = ::PraseBinaryClassifier(classifier_node, kernel, inverse);
+    }
+
+    if (labels.size() == 2) return std::unique_ptr<ClassifierBase>(std::move(classifiers[0]));
+
+    return std::unique_ptr<ClassifierBase>(new OVOClassifier(std::move(classifiers)));
   }
 
   std::unique_ptr<ClassifierBase> ParseOVRClassifier(const YAML::Node& data) {

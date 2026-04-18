@@ -92,7 +92,7 @@ namespace neonsvm::utility {
   }
 
   constexpr size_t pair_index(size_t first, size_t second, size_t n) {
-    return first * n - first * (first - 1) / 2 + second - first - 1;
+    return first * n - first * (first + 1) / 2 + second - first - 1;
   }
 } // namespace neonsvm::utility
 

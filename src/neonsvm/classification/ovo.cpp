@@ -17,7 +17,7 @@ namespace neonsvm {
       for (size_t j = i + 1; j < m_class_count; j++) {
         const auto ovo_label = m_classifiers[classifier_index]->PredictLabel(features);
 
-        if (ovo_label == 0)
+        if (ovo_label == 1) // FIXME: I assumed the wrong order of ovo classifiers, this need to be addressed probably on both sides (python and c++)
           votes[i]++;
         else
           votes[j]++;
