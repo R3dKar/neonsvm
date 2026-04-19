@@ -13,7 +13,7 @@ namespace neonsvm {
     m_vectors_scaled = support_vectors;
 
     for (auto& vector : m_vectors_scaled) {
-      vector.resize(neonsvm::utility::align_size(vector.size(), 4), 0);
+      vector.resize(utility::align_size(vector.size(), 4), 0);
       for (auto& item : vector) {
         item *= m_sqrt_gamma;
       }
@@ -55,7 +55,7 @@ namespace neonsvm {
     for (; i + 4 <= norms.size(); i += 4) {
       const float32x4_t norm_v = vld1q_f32(&norms[i]);
       const float32x4_t coeff_v = vld1q_f32(&m_coeffictients[i]);
-      const float32x4_t exp_v = neonsvm::utility::vexpq_f32(vnegq_f32(norm_v));
+      const float32x4_t exp_v = utility::vexpq_f32(vnegq_f32(norm_v));
       sum_v = vfmaq_f32(sum_v, exp_v, coeff_v);
     }
 

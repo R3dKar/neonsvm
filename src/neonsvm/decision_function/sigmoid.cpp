@@ -44,7 +44,7 @@ namespace neonsvm {
     for (; i + 4 <= xs.size(); i += 4) {
       const float32x4_t coeff_v = vld1q_f32(&m_coefficients[i]);
       const float32x4_t x_v = vld1q_f32(&xs[i]);
-      const float32x4_t exp_v = neonsvm::utility::vexpq_f32(x_v);
+      const float32x4_t exp_v = utility::vexpq_f32(x_v);
       const float32x4_t one_v = vdupq_n_f32(1);
       const float32x4_t tanh_v = vdivq_f32(vsubq_f32(exp_v, one_v), vaddq_f32(exp_v, one_v));
       sum_v = vfmaq_f32(sum_v, coeff_v, tanh_v);

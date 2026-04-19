@@ -95,16 +95,16 @@ namespace {
     std::vector<std::unique_ptr<BinarySVC>> classifiers(labels.size() * (labels.size() - 1) / 2);
 
     for (const auto classifier_node : data["binary-classifiers"]) {
-      auto false_index = label_index[classifier_node["false-label"].as<std::string>()];
       auto true_index = label_index[classifier_node["true-label"].as<std::string>()];
+      auto false_index = label_index[classifier_node["false-label"].as<std::string>()];
 
       bool inverse = false;
-      if (false_index > true_index) {
+      if (true_index > false_index) {
         std::swap(false_index, true_index);
         inverse = true;
       }
 
-      const auto classifier_index = utility::pair_index(false_index, true_index, labels.size());
+      const auto classifier_index = utility::pair_index(true_index, false_index, labels.size());
       classifiers[classifier_index] = ::PraseBinaryClassifier(classifier_node, kernel, inverse);
     }
 
@@ -146,7 +146,7 @@ namespace {
     else
       classifier = ::ParseOVRClassifier(svc);
 
-    if (with_checks && svc["sanity-checks"]) {
+    if (with_checks && svc["checks"]) {
       const auto labels = svc["labels"].as<std::vector<std::string>>();
 
       std::unordered_map<std::string, size_t> label_index{};
@@ -154,18 +154,18 @@ namespace {
         label_index[labels[i]] = i;
       }
 
-      for (const auto check_node : svc["sanity-checks"]) {
+      for (const auto check_node : svc["checks"]) {
         const auto features = check_node["features"].as<std::vector<float>>();
         const auto correct_index = label_index[check_node["label"].as<std::string>()];
         const auto predicted_index = classifier->PredictLabel(features);
 
-        if (correct_index != predicted_index) throw std::runtime_error("Sanity check didn't pass");
+        if (correct_index != predicted_index) throw std::runtime_error("Check didn't pass");
 
         if (check_node["probabilities"]) {
           const auto correct_probabilities = check_node["probabilities"].as<std::vector<float>>();
           const auto predicted_probabilities = classifier->PredictProbability(features);
 
-          if (!utility::equal_approx(correct_probabilities, predicted_probabilities)) throw std::runtime_error("Sanity check didn't pass");
+          if (!utility::equal_approx(correct_probabilities, predicted_probabilities)) throw std::runtime_error("Check didn't pass");
         }
       }
     }
@@ -183,13 +183,13 @@ namespace {
 
     SVR regressor(::ParseDecisionFunction(svr, kernel));
 
-    if (with_checks && svr["sanity-checks"]) {
-      for (const auto check_node : svr["sanity-checks"]) {
+    if (with_checks && svr["checks"]) {
+      for (const auto check_node : svr["checks"]) {
         const auto features = check_node["features"].as<std::vector<float>>();
         const auto correct_value = check_node["value"].as<float>();
         const auto predicted_value = regressor.Predict(features);
 
-        if (!utility::equal_approx(correct_value, predicted_value)) throw std::runtime_error("Sanity check didn't pass");
+        if (!utility::equal_approx(correct_value, predicted_value)) throw std::runtime_error("Check didn't pass");
       }
     }
 

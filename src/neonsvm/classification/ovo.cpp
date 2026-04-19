@@ -17,7 +17,7 @@ namespace neonsvm {
       for (size_t j = i + 1; j < m_class_count; j++) {
         const auto ovo_label = m_classifiers[classifier_index]->PredictLabel(features);
 
-        if (ovo_label == 1) // FIXME: I assumed the wrong order of ovo classifiers, this need to be addressed probably on both sides (python and c++)
+        if (ovo_label == 1)
           votes[i]++;
         else
           votes[j]++;
@@ -50,8 +50,8 @@ namespace neonsvm {
         constexpr float max_probability = 1 - min_probability;
         const auto vs_probabilities = m_classifiers[classifier_index]->PredictProbability(features);
 
-        ovo_probabilities[j][i] = neonsvm::utility::clamp(vs_probabilities[0], min_probability, max_probability);
-        ovo_probabilities[i][j] = neonsvm::utility::clamp(vs_probabilities[1], min_probability, max_probability);
+        ovo_probabilities[j][i] = utility::clamp(vs_probabilities[0], min_probability, max_probability);
+        ovo_probabilities[i][j] = utility::clamp(vs_probabilities[1], min_probability, max_probability);
 
         classifier_index++;
       }
@@ -71,8 +71,8 @@ namespace neonsvm {
     const float eps = 0.005f / m_class_count;
     const size_t max_iteration = std::max<size_t>(100, m_class_count);
 
-    for (size_t i = 0; i < m_class_count - 1; i++) {
-      for (size_t j = i + 1; j < m_class_count; j++) {
+    for (size_t i = 0; i < m_class_count; i++) {
+      for (size_t j = 0; j < i; j++) {
         Q[i][i] += ovo_probabilities[j][i] * ovo_probabilities[j][i];
         Q[i][j] = Q[j][i];
       }
