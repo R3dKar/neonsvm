@@ -6,8 +6,6 @@
 #include <stdexcept>
 #include <vector>
 
-#define NOT_IMPLEMENTED throw std::logic_error("Not implemented yet")
-
 namespace neonsvm::utility {
   // https://github.com/Tencent/ncnn/blob/426cf6673242e4eecf6791d720bd7a7b9b59cdb3/src/layer/arm/neon_mathfun.h#L132
   inline float32x4_t vexpq_f32(float32x4_t x) {
