@@ -31,7 +31,7 @@ Then import and run inference:
 int main() {
   const auto classifier = neonsvm::LoadClassifierFile("./model.yaml");
 
-  std::cout << classifier->Predict({1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0}) << '\n';
+  std::cout << classifier->PredictLabel({1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0}) << '\n';
 
   return 0;
 }
