@@ -4,6 +4,7 @@ project(neonsvm VERSION 0.1.0 LANGUAGES CXX)
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(BUILD_TESTS "Build tests executable" ${PROJECT_IS_TOP_LEVEL})
 
+# NEON SIMD check
 include(CheckCXXSourceCompiles)
 check_cxx_source_compiles([[
   #include <arm_neon.h>
@@ -17,6 +18,7 @@ if (NOT HAVE_NEON)
   message(FATAL_ERROR "NEON SIMD is not supported")
 endif()
 
+# External dependencies
 include(FetchContent)
 
 set(YAML_CPP_BUILD_TOOLS OFF)
@@ -36,6 +38,7 @@ if (BUILD_TESTS)
   FetchContent_MakeAvailable(googletest)
 endif()
 
+# Targets configuration
 file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS src/*.cpp)
 
 if (BUILD_SHARED_LIBS)
@@ -50,6 +53,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC yaml-cpp::yaml-cpp)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
 
+# Tests
 if (BUILD_TESTS)
   enable_testing()
 
