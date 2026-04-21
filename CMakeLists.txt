@@ -53,13 +53,13 @@ set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
 if (BUILD_TESTS)
   enable_testing()
 
-  add_executable(${PROJECT_NAME}_test test/main.cpp)
+  add_executable(${PROJECT_NAME}_test tests/main.cpp)
   target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_NAME} GTest::gtest_main)
 
   include(GoogleTest)
   gtest_discover_tests(${PROJECT_NAME}_test)
 
   add_custom_command(TARGET ${PROJECT_NAME}_test POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/test/models/ $<TARGET_FILE_DIR:${PROJECT_NAME}_test>/models/
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/tests/models/ $<TARGET_FILE_DIR:${PROJECT_NAME}_test>/models/
   )
 endif()
