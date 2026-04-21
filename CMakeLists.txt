@@ -21,6 +21,7 @@ endif()
 # External dependencies
 include(FetchContent)
 
+set(YAML_BUILD_SHARED_LIBS OFF)
 set(YAML_CPP_BUILD_TOOLS OFF)
 FetchContent_Declare(
   yaml-cpp
