@@ -6,8 +6,18 @@
 #include <stdexcept>
 #include <vector>
 
+/**
+ * @brief Namespace with different utility functions used across neonsvm implementation files.
+ */
 namespace neonsvm::utility {
-  // https://github.com/Tencent/ncnn/blob/426cf6673242e4eecf6791d720bd7a7b9b59cdb3/src/layer/arm/neon_mathfun.h#L132
+  /**
+   * @brief Calculates exp(x) using NEON SIMD.
+   *
+   * The implementations was take from https://github.com/Tencent/ncnn/blob/426cf6673242e4eecf6791d720bd7a7b9b59cdb3/src/layer/arm/neon_mathfun.h#L132
+   *
+   * @param x NEON SIMD vector of x
+   * @return NEON SIMD vector of exp(x)
+   */
   inline float32x4_t vexpq_f32(float32x4_t x) {
     constexpr float c_exp_hi = 88.3762626647949f;
     constexpr float c_exp_lo = -88.3762626647949f;
@@ -66,19 +76,55 @@ namespace neonsvm::utility {
     return y;
   }
 
+  /**
+   * @brief Rounds up the `size` to be divisible by `alignment`.
+   *
+   * @param size Original size.
+   * @param alignment Target size alignment.
+   * @return Rounded up size.
+   */
   constexpr size_t align_size(size_t size, size_t alignment) {
     return (size % alignment == 0) ? size : size + alignment - (size % alignment);
   }
 
+  /**
+   * @brief Clamps `value` to be between `min` and `max`.
+   *
+   * @tparam T Type of arguments and result.
+   * @param value Target value.
+   * @param min Lower boundary for `value`.
+   * @param max Upper boundary for `value`.
+   * @return Clamped value.
+   */
   template <typename T>
   constexpr T clamp(T value, T min, T max) {
     return std::max(min, std::min(value, max));
   }
 
+  /**
+   * @brief Checks if `first` and `second` are close.
+   *
+   * Calculates `abs(first - second) <= error`.
+   *
+   * @param first First value.
+   * @param second Second value.
+   * @param error Absolute error within which values are considered equal.
+   * @return `true` if values are close.
+   * @return `false` otherwise.
+   */
   constexpr bool equal_approx(float first, float second, float error = 1e-3f) {
     return std::abs(first - second) <= error;
   }
 
+  /**
+   * @brief Checks if two vectors have close values.
+   *
+   * @param first First vector.
+   * @param second Second vector.
+   * @param error Absolute error within which values are considered equal.
+   * @return `true` if vectors are close.
+   * @return `false` othrewise or if sizes mismatch.
+   */
   inline bool equal_approx(const std::vector<float>& first, const std::vector<float>& second, float error = 1e-3f) {
     if (first.size() != second.size()) return false;
 
@@ -89,6 +135,16 @@ namespace neonsvm::utility {
     return true;
   }
 
+  /**
+   * @brief Calculates index of pair (`first`, `second`) in a sequence of combinations of two ranges `0..n-1` ordered in lexicographical order.
+   *
+   * For example, for `n=3` range is `0, 1, 2`, its ordered combinations are `(0, 1), (0, 2), (1, 2)`. Thus index of pair `(0, 2)` is `1`.
+   *
+   * @param first First element of pair.
+   * @param second Second element of pair.
+   * @param n Range size.
+   * @return Index of pair in sequence.
+   */
   constexpr size_t pair_index(size_t first, size_t second, size_t n) {
     return first * n - first * (first + 1) / 2 + second - first - 1;
   }
