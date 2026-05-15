@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.11)
 project(neonsvm VERSION 0.1.0 LANGUAGES CXX)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
@@ -21,6 +21,7 @@ endif()
 # External dependencies
 include(FetchContent)
 
+# yaml-cpp
 set(YAML_BUILD_SHARED_LIBS OFF)
 set(YAML_CPP_BUILD_TOOLS OFF)
 FetchContent_Declare(
@@ -30,6 +31,16 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(yaml-cpp)
 
+# eigen
+set(EIGEN_BUILD_BLAS ON)
+FetchContent_Declare(
+  eigen
+  GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+  GIT_TAG 3.4.1
+)
+FetchContent_MakeAvailable(eigen)
+
+# googletest
 if (BUILD_TESTS)
   FetchContent_Declare(
     googletest
@@ -49,7 +60,7 @@ else()
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC include PRIVATE src)
-target_link_libraries(${PROJECT_NAME} PUBLIC yaml-cpp::yaml-cpp)
+target_link_libraries(${PROJECT_NAME} PUBLIC yaml-cpp::yaml-cpp Eigen3::Eigen)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
@@ -58,13 +69,11 @@ set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
 if (BUILD_TESTS)
   enable_testing()
 
-  add_executable(${PROJECT_NAME}_test tests/main.cpp)
+  file(GLOB_RECURSE PROJECT_TEST_SOURCES CONFIGURE_DEPENDS tests/*.cpp)
+
+  add_executable(${PROJECT_NAME}_test ${PROJECT_TEST_SOURCES})
   target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_NAME} GTest::gtest_main)
 
   include(GoogleTest)
-  gtest_discover_tests(${PROJECT_NAME}_test)
-
-  add_custom_command(TARGET ${PROJECT_NAME}_test POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/tests/models/ $<TARGET_FILE_DIR:${PROJECT_NAME}_test>/models/
-  )
+  gtest_discover_tests(${PROJECT_NAME}_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 endif()

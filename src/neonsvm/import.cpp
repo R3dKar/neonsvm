@@ -154,18 +154,39 @@ namespace {
         label_index[labels[i]] = i;
       }
 
+      std::vector<std::vector<float>> features_batch{};
+      std::vector<uint32_t> correct_labels_batch{};
+      std::vector<std::vector<float>> correct_probabilities_batch{};
+
       for (const auto check_node : svc["checks"]) {
         const auto features = check_node["features"].as<std::vector<float>>();
         const auto correct_index = label_index[check_node["label"].as<std::string>()];
-        const auto predicted_index = classifier->PredictLabel(features);
 
-        if (correct_index != predicted_index) throw std::runtime_error("Check didn't pass");
+        features_batch.emplace_back(std::move(features));
+        correct_labels_batch.push_back(static_cast<uint32_t>(correct_index));
 
         if (check_node["probabilities"]) {
           const auto correct_probabilities = check_node["probabilities"].as<std::vector<float>>();
-          const auto predicted_probabilities = classifier->PredictProbability(features);
 
-          if (!utility::equal_approx(correct_probabilities, predicted_probabilities)) throw std::runtime_error("Check didn't pass");
+          correct_probabilities_batch.emplace_back(std::move(correct_probabilities));
+        }
+      }
+
+      const auto predicted_labels_batch = classifier->PredictLabelBatch(features_batch);
+
+      for (size_t i = 0; i < predicted_labels_batch.size(); i++) {
+        const auto predicted_label = classifier->PredictLabel(features_batch[i]);
+        if (correct_labels_batch[i] != predicted_labels_batch[i]) throw std::runtime_error("Check didn't pass");
+        if (correct_labels_batch[i] != predicted_label) throw std::runtime_error("Check didn't pass");
+      }
+
+      if (!correct_probabilities_batch.empty()) {
+        const auto predicted_probabilities_batch = classifier->PredictProbabilityBatch(features_batch);
+
+        for (size_t i = 0; i < predicted_probabilities_batch.size(); i++) {
+          const auto predicted_probabilties = classifier->PredictProbability(features_batch[i]);
+          if (!utility::equal_approx(correct_probabilities_batch[i], predicted_probabilities_batch[i])) throw std::runtime_error("Check didn't pass");
+          if (!utility::equal_approx(correct_probabilities_batch[i], predicted_probabilties)) throw std::runtime_error("Check didn't pass");
         }
       }
     }
@@ -184,12 +205,23 @@ namespace {
     SVR regressor(::ParseDecisionFunction(svr, kernel));
 
     if (with_checks && svr["checks"]) {
+      std::vector<std::vector<float>> features_batch{};
+      std::vector<float> correct_values_batch{};
+
       for (const auto check_node : svr["checks"]) {
         const auto features = check_node["features"].as<std::vector<float>>();
         const auto correct_value = check_node["value"].as<float>();
-        const auto predicted_value = regressor.Predict(features);
 
-        if (!utility::equal_approx(correct_value, predicted_value)) throw std::runtime_error("Check didn't pass");
+        features_batch.emplace_back(std::move(features));
+        correct_values_batch.push_back(correct_value);
+      }
+
+      const auto predicted_values = regressor.PredictBatch(features_batch);
+
+      for (size_t i = 0; i < correct_values_batch.size(); i++) {
+        const auto predicted_value = regressor.Predict(features_batch[i]);
+        if (!utility::equal_approx(correct_values_batch[i], predicted_values[i])) throw std::runtime_error("Check didn't pass");
+        if (!utility::equal_approx(correct_values_batch[i], predicted_value)) throw std::runtime_error("Check didn't pass");
       }
     }
 
