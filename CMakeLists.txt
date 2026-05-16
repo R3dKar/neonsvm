@@ -32,7 +32,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(yaml-cpp)
 
 # eigen
-set(EIGEN_BUILD_BLAS ON)
 FetchContent_Declare(
   eigen
   GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
@@ -72,7 +71,7 @@ if (BUILD_TESTS)
   file(GLOB_RECURSE PROJECT_TEST_SOURCES CONFIGURE_DEPENDS tests/*.cpp)
 
   add_executable(${PROJECT_NAME}_test ${PROJECT_TEST_SOURCES})
-  target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_NAME} GTest::gtest_main)
+  target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_NAME} GTest::gtest GTest::gtest_main)
 
   include(GoogleTest)
   gtest_discover_tests(${PROJECT_NAME}_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
