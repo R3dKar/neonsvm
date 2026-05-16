@@ -69,7 +69,7 @@ include(FetchContent)
 FetchContent_Declare(
   neonsvm
   GIT_REPOSITORY https://github.com/R3dKar/neonsvm.git
-  GIT_TAG main
+  GIT_TAG v0.1.1
 )
 FetchContent_MakeAvailable(neonsvm)
 

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.11)
-project(neonsvm VERSION 0.1.0 LANGUAGES CXX)
+project(neonsvm VERSION 0.1.1 LANGUAGES CXX)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(BUILD_TESTS "Build tests executable" ${PROJECT_IS_TOP_LEVEL})
