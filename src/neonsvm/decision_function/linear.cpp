@@ -1,4 +1,5 @@
 #include "neonsvm/decision_function/linear.hpp"
+#include <Eigen/Dense>
 #include <arm_neon.h>
 #include <cstddef>
 
@@ -7,11 +8,10 @@ namespace neonsvm {
                                                  float bias) {
     m_bias = bias;
 
-    m_hyperplane = std::vector<float>(support_vectors[0].size(), 0);
+    m_hyperplane = Eigen::VectorXf::Zero(support_vectors[0].size());
     for (size_t i = 0; i < coefficients.size(); i++) {
-      for (size_t j = 0; j < support_vectors[i].size(); j++) {
-        m_hyperplane[j] += coefficients[i] * support_vectors[i][j];
-      }
+      const Eigen::Map<const Eigen::VectorXf> support_vector(support_vectors[i].data(), support_vectors[i].size());
+      m_hyperplane += coefficients[i] * support_vector;
     }
   }
 
@@ -32,5 +32,19 @@ namespace neonsvm {
     }
 
     return result;
+  }
+
+  std::vector<float> LinearDecisionFunction::PredictBatch(const std::vector<std::vector<float>>& batch) const {
+    Eigen::MatrixXf matrix_batch(batch.size(), batch[0].size());
+    for (size_t i = 0; i < batch.size(); i++) {
+      matrix_batch.row(i) = Eigen::Map<const Eigen::RowVectorXf>(batch[i].data(), batch[i].size());
+    }
+
+    std::vector<float> results(batch.size(), 0);
+    Eigen::Map<Eigen::VectorXf> results_map(results.data(), results.size());
+
+    results_map = (matrix_batch * m_hyperplane).array() + m_bias;
+
+    return results;
   }
 } // namespace neonsvm

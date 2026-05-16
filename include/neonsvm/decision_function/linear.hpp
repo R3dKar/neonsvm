@@ -2,6 +2,7 @@
 #define _NEONSVM_DECISION_FUNCTION_LINEAR_HPP_
 
 #include "neonsvm/decision_function/base.hpp"
+#include <Eigen/Dense>
 
 namespace neonsvm {
   /**
@@ -24,10 +25,18 @@ namespace neonsvm {
      * @param features Single vector of features.
      * @return Predicted decision function value.
      */
-    virtual float Predict(const std::vector<float>& features) const override;
+    float Predict(const std::vector<float>& features) const override;
+
+    /**
+     * @brief Calculates values of decision function (aka score) from a `batch` of features vectors.
+     *
+     * @param batch List of features vectors.
+     * @return Predicted decision function values that corresponds to `batch` features vectors.
+     */
+    std::vector<float> PredictBatch(const std::vector<std::vector<float>>& batch) const override;
 
   private:
-    std::vector<float> m_hyperplane;
+    Eigen::VectorXf m_hyperplane;
     float m_bias;
   };
 } // namespace neonsvm

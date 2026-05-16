@@ -25,7 +25,7 @@ namespace neonsvm {
      * @param features Single vector of features.
      * @return Predicted decision function value.
      */
-    virtual float Predict(const std::vector<float>& features) const override;
+    float Predict(const std::vector<float>& features) const override;
 
   private:
     std::vector<float> m_coeffictients;

@@ -39,7 +39,7 @@ namespace neonsvm {
      * @param features Single vector of features.
      * @return Predicted class label.
      */
-    virtual uint32_t PredictLabel(const std::vector<float>& features) const override;
+    uint32_t PredictLabel(const std::vector<float>& features) const override;
 
     /**
      * @brief Calculates probabilites of a single `features` vector to be each class.
@@ -48,7 +48,7 @@ namespace neonsvm {
      * @return Predicted probabilities for each class. The layout is mostly this: for class 0 corresponding probability is at index 0, for class 1 at
      * index 1 etc.
      */
-    virtual std::vector<float> PredictProbability(const std::vector<float>& features) const override;
+    std::vector<float> PredictProbability(const std::vector<float>& features) const override;
 
   private:
     std::vector<std::unique_ptr<BinarySVC>> m_classifiers;
